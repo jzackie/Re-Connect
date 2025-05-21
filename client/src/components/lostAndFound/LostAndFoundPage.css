@@ -1,0 +1,277 @@
+/* LostAndFoundPage.css */
+
+/* Reset some basics */
+* {
+  box-sizing: border-box;
+}
+
+.item2 {
+  max-width: 100%;
+  padding: 0 20px 60px;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  color: #333;
+  background: #fff;
+  box-shadow: 0 4px 16px rgba(30, 58, 138, 0.15);
+  position: relative;
+
+  flex-grow: 1;     /* fills available vertical space */
+  min-height: 0;    /* fixes flexbox scroll issues */
+  overflow-y: auto; /* scroll content inside */
+
+  width: 100%;
+  box-sizing: border-box;
+}
+
+
+
+h3 {
+  color: #1E3A8A;
+  font-weight: 700;
+  font-size: 2rem;
+  margin-bottom: 25px;
+  text-align: center;
+  letter-spacing: 1.2px;
+}
+
+/* Tabs */
+.tabs {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  margin-bottom: 30px;
+}
+
+/* Tabs buttons - minimal, no border radius or borders */
+.tabs button {
+  background: transparent;
+  border: none;           /* no border */
+  color: #1E3A8A;
+  padding: 10px 28px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  min-width: 120px;
+  border-radius: 0;       /* removed border radius */
+  border-bottom: 2px solid transparent;
+}
+
+/* Hover: underline effect */
+.tabs button:hover {
+  border-bottom: 2px solid #1E3A8A;
+  color: #1E3A8A;
+  background: transparent;
+}
+
+/* Active tab style - underline and bold */
+.tabs .tabs-active {
+  border-bottom: 3px solid #1E3A8A;
+  color: #1E3A8A;
+  font-weight: 700;
+  background: transparent;
+  box-shadow: none;
+}
+
+/* List containers remain unchanged */
+.unclaimed-list,
+.claimed-list {
+  max-height: 100%;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  padding: 12px;
+  background: #f9faff;
+  box-shadow: inset 0 0 6px #e2e8f0;
+}
+
+/* Individual list items */
+.list-item {
+  display: flex;
+  gap: 20px;
+  align-items: center;
+  padding: 14px 18px;
+  border-radius: 8px;
+  background: white;
+  box-shadow: 0 1px 4px rgba(30, 58, 138, 0.1);
+  margin-bottom: 12px;
+  transition: box-shadow 0.3s ease;
+}
+
+.list-item:hover {
+  box-shadow: 0 4px 14px rgba(30, 58, 138, 0.25);
+}
+
+.item-image {
+  width: 75px;
+  height: 75px;
+  border-radius: 6px;
+  background: #e2e8f0;
+  object-fit: cover;
+  flex-shrink: 0;
+  border: 1.5px solid #1E3A8A;
+}
+
+.item-info {
+  flex-grow: 1;
+  color: #222;
+}
+
+.item-description {
+  font-weight: 700;
+  font-size: 1.1rem;
+  margin-bottom: 4px;
+  color: #1E3A8A;
+}
+
+.item-location,
+.item-date,
+.item-status {
+  font-size: 0.9rem;
+  color: #555;
+  margin: 2px 0;
+}
+
+/* Modal overlay */
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(30, 58, 138, 0.6);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1500;
+}
+
+/* Modal content */
+.modal-content {
+  background: white;
+  border-radius: 10px;
+  padding: 30px 30px 20px;
+  max-width: 480px;
+  width: 90%;
+  box-shadow: 0 8px 24px rgba(30, 58, 138, 0.3);
+  position: relative;
+  overflow-y: auto;
+  max-height: 80vh;
+}
+
+.modal-item-image {
+  width: 100%;
+  max-height: 220px;
+  object-fit: contain;
+  border-radius: 8px;
+  margin-bottom: 20px;
+  border: 1.5px solid #1E3A8A;
+  background: #f9faff;
+}
+
+/* Modal headings and paragraphs */
+.modal-description-heading1 {
+  color: #1E3A8A;
+  font-weight: 700;
+  font-size: 1.3rem;
+  margin-bottom: 10px;
+}
+
+.modal-content p {
+  margin: 6px 0 14px;
+  font-size: 1rem;
+  color: #333;
+}
+
+/* Form inside modal */
+.modal-content label {
+  display: block;
+  font-weight: 600;
+  margin-bottom: 6px;
+  color: #1E3A8A;
+}
+
+.modal-content input[type="text"],
+.modal-content input[type="date"],
+.modal-content select,
+.modal-content input[type="file"] {
+  width: 100%;
+  padding: 9px 12px;
+  margin-bottom: 18px;
+  border-radius: 5px;
+  border: 1.5px solid #ccc;
+  font-size: 1rem;
+  transition: border-color 0.3s ease;
+}
+
+.modal-content input[type="text"]:focus,
+.modal-content input[type="date"]:focus,
+.modal-content select:focus {
+  border-color: #1E3A8A;
+  outline: none;
+  box-shadow: 0 0 6px #1E3A8Aaa;
+}
+
+/* Buttons container inside modal */
+.modal-buttons {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-top: 10px;
+}
+
+.modal-buttons button {
+  background-color: #1E3A8A;
+  color: white;
+  border: none;
+  padding: 10px 22px;
+  border-radius: 6px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  user-select: none;
+}
+
+.modal-buttons button:hover {
+  background-color: #163271;
+}
+
+.modal-buttons button[type="button"] {
+  background-color: #ccc;
+  color: #444;
+}
+
+.modal-buttons button[type="button"]:hover {
+  background-color: #aaa;
+}
+
+/* Image preview inside modal form */
+.modal-content img {
+  border-radius: 8px;
+  border: 1.5px solid #1E3A8A;
+}
+
+/* Floating Admin Button */
+.floating-admin-button {
+  position: fixed;
+  bottom: 32px;
+  right: 32px;
+  background-color: #1E3A8A;
+  color: white;
+  font-size: 30px;
+  border-radius: 50%;
+  width: 56px;
+  height: 56px;
+  border: none;
+  cursor: pointer;
+  box-shadow: 0 6px 16px rgba(30, 58, 138, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.3s ease, box-shadow 0.3s ease;
+  user-select: none;
+}
+
+.floating-admin-button:hover {
+  background-color: #163271;
+  box-shadow: 0 8px 22px rgba(30, 58, 138, 0.6);
+}

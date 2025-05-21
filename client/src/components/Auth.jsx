@@ -43,40 +43,66 @@ const Auth = () => {
     const URL = 'http://localhost:5000/auth';
 
     try {
-      const formData = new FormData();
-      formData.append('fullName', fullName);
-      formData.append('username', username);
-      formData.append('password', password);
-      formData.append('phoneNumber', phoneNumber);
-      if (avatarFile) formData.append('avatar', avatarFile);
-
-      const { data: { token, userId, hashedPassword, avatarURL } } = await axios.post(
-        `${URL}/${isSignup ? 'signup' : 'login'}`,
-        formData,
-        {
-          headers: { 'Content-Type': 'multipart/form-data' },
-        }
-      );
-
-      await client.connectUser(
-        {
-          id: userId,
-          name: username,
-          fullName,
-          image: avatarURL,
-          phoneNumber,
-        },
-        token
-      );
-
-      cookies.set('token', token);
-      cookies.set('username', username);
-      cookies.set('fullName', fullName);
-      cookies.set('userId', userId);
       if (isSignup) {
+        const formData = new FormData();
+        formData.append('fullName', fullName);
+        formData.append('username', username);
+        formData.append('password', password);
+        formData.append('phoneNumber', phoneNumber);
+        if (avatarFile) formData.append('avatar', avatarFile);
+
+        const { data: { token, userId, hashedPassword, avatarURL } } = await axios.post(
+          `${URL}/signup`,
+          formData,
+          {
+            headers: { 'Content-Type': 'multipart/form-data' },
+          }
+        );
+
+        cookies.set('token', token);
+        cookies.set('username', username);
+        cookies.set('fullName', fullName);
+        cookies.set('userId', userId);
         cookies.set('phoneNumber', phoneNumber);
         cookies.set('avatarURL', avatarURL);
         cookies.set('hashedPassword', hashedPassword);
+
+        await client.connectUser(
+          {
+            id: userId,
+            name: username,
+            fullName,
+            image: avatarURL,
+            phoneNumber,
+          },
+          token
+        );
+      } else {
+        const { data: { token, userId, fullName, avatarURL, hashedPassword, phoneNumber } } =
+          await axios.post(
+            `${URL}/login`,
+            { username, password },
+            { headers: { 'Content-Type': 'application/json' } }
+          );
+
+        cookies.set('token', token);
+        cookies.set('username', username);
+        cookies.set('fullName', fullName);
+        cookies.set('userId', userId);
+        cookies.set('phoneNumber', phoneNumber);
+        cookies.set('avatarURL', avatarURL);
+        cookies.set('hashedPassword', hashedPassword);
+
+        await client.connectUser(
+          {
+            id: userId,
+            name: username,
+            fullName,
+            image: avatarURL,
+            phoneNumber,
+          },
+          token
+        );
       }
 
       window.location.reload();
@@ -194,3 +220,5 @@ const Auth = () => {
 };
 
 export default Auth;
+
+

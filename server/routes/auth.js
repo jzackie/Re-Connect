@@ -20,4 +20,3 @@ router.post("/signup", upload.single("avatar"), signup);
 router.post("/login", login);
 
 module.exports = router;
-

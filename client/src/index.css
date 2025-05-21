@@ -2,8 +2,10 @@
    Global Styles
 ==================================*/
 
+
 /* Default Light Mode */
-html, body {
+html, body, #root {
+  height: 100%;
   background-color: white;
   color: black;
   font-family: Arial, sans-serif;

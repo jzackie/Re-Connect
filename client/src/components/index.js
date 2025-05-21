@@ -8,4 +8,3 @@ export { default as MessagePage } from './messages/MessagePage';
 export { default as Settings } from './settings/Settings';
 
 export { default as Notification } from './notifications/Notification';
-
