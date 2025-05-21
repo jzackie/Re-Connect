@@ -1,0 +1,166 @@
+html,
+body {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 1.5rem;
+    height: 80px;
+    background-color: #1E3A8A;
+    z-index: 1000;
+  }
+
+.header-right {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.logo {
+  width: 100px;
+  height: auto;
+  margin-left: 15px;
+}
+
+/* Overall Layout Container */
+.layout {
+  display: flex;
+  height: 100vh;
+  width: 100%;
+  overflow: hidden;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* ========== Profile ========== */
+.profile-circle {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #000000;
+}
+
+.profile-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 50%;
+}
+
+
+
+.header-logout__icon-inner img {
+  width: 28px;
+  height: 28px;
+}
+
+.header-logout__icon-inner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+
+/* ========== SIDEBAR (Left Panel) ========== */
+.sidebar {
+  width: 20%;
+  color: rgb(255, 255, 255);
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  padding: 3rem;
+  border-right: 0.5px solid #cccccc94;  
+}
+
+.sidebar-logo {
+  margin-bottom: 2rem;
+}
+
+.logo {
+  width: 70px;
+  height: 70px;
+}
+
+/* Navigation Links */
+.sidebar-nav ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  width: 100%;
+}
+
+.sidebar-nav li {
+  margin-bottom: 1rem;
+  width: 100%;
+}
+
+.sidebar-nav a {
+  text-decoration: none;
+  color: rgb(0, 0, 0);
+  padding: 0.5rem 0.75rem;
+  display: flex;
+  align-items: center;
+  border-radius: 8px;
+  transition: background 0.2s;
+}
+
+.sidebar-nav a:hover {
+  background-color: #1E3A8A;
+  color: #ffffff;
+}
+
+.sidebar-nav li.active a {
+  background-color: #1E3A8A;
+  color: #ffffff;
+  font-weight: bold;
+}
+
+/* ========== MAIN CONTENT AREA (Center) ========== */
+.main-content {
+  flex: 1;
+  background-color: #f5f6fa;
+  overflow-y: auto;
+}
+
+/* ========== SEARCH PANEL (Right Panel) ========== */
+.search-panel {
+  border-left: 0.5px solid #cccccc94;  
+  width: 20%;
+  background-color: #ffffff;
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.search-wrapper {
+  position: relative;
+  width: 100%;
+}
+
+.search-icon {
+  position: absolute;
+  top: 50%;
+  left: 12px;
+  transform: translateY(-50%);
+  width: 16px;
+  height: 16px;
+  pointer-events: none;
+  opacity: 0.6;
+}
+
+.search-input {
+  width: 80%;
+  padding: 0.5rem 0.5rem 0.5rem 2.2rem;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 14px;
+}

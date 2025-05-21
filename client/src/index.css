@@ -1,0 +1,167 @@
+/* ================================
+   Global Styles
+==================================*/
+
+/* Default Light Mode */
+html, body {
+  background-color: white;
+  color: black;
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* Dark Mode - html triggers system-wide styling */
+html.dark {
+  background-color: #121212;
+  color: white;
+}
+
+.dark body {
+  background-color: #000000;
+  color: #ffffff;
+}
+
+/* ================================
+   Layout Elements
+==================================*/
+
+header, footer {
+  background-color: #f0f0f0;
+  color: #000000;
+  padding: 1rem;
+}
+
+.dark header {
+  background-color: #000000;
+}
+
+.dark footer,
+.dark aside {
+  background-color: #0c0c0c;
+  color: #ccc;
+}
+
+.dark .sidebar {
+  border-right: 1px solid rgb(27, 27, 27);
+  color: white;
+}
+
+.dark .search-panel {
+  border-left: 1px solid rgb(27, 27, 27);
+}
+
+.dark .sidebar-nav,
+.dark a {
+  color: white;
+}
+
+.dark a:hover {
+  color: #60a5fa;
+}
+
+.dark .text-xl {
+  color: white;
+}
+
+/* ================================
+   Main Content Areas
+==================================*/
+
+.dark .main-content {
+  background-color: #0c0c0c;
+}
+
+/* Messages */
+.dark .team-channel-list__header__title,
+.dark .channel-preview__item p,
+.dark .team-channel-header__container p {
+  color: white;
+}
+
+.dark .team-channel-header__container {
+  background-color: #000000;
+}
+
+.dark .str-class__message-bubble {
+  color: #2563eb;
+}
+
+/* Thread */
+.dark .str-chat__thread {
+  background-color: #0f0f0f;
+}
+
+/* ================================
+   Message Actions & Icons
+==================================*/
+
+/* Hide by default */
+.str-chat__message-options {
+  display: none;
+}
+
+/* Show when active */
+.str-chat__message-options,
+.str-chat__message-options--active {
+  display: flex !important;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+/* Action buttons */
+.str-chat__message-actions-box-button,
+.str-chat__message-reactions-button,
+.str-chat__message-reply-in-thread-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0.25rem;
+}
+
+/* Icon styling */
+.str-chat__message-action-icon {
+  display: inline-block;
+  fill: currentColor;
+  color: white;
+  opacity: 1;
+}
+
+/* ================================
+   Buttons
+==================================*/
+
+button {
+  cursor: pointer;
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: 4px;
+  background-color: #e0e0e0;
+  color: #333;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* ================================
+   Auth / Channel Creation
+==================================*/
+
+.dark .create-channel__header p,
+.dark .user-item__wrapper p {
+  color: white;
+}
+
+.dark .user-item__wrapper:hover {
+  background-color: rgba(255, 255, 255, 0.212);
+}
+
+.dark .create-channel__button-wrapper {
+  background-color: #000000;
+}
+
+.dark .auth__form-container {
+  background-color: white;
+}
