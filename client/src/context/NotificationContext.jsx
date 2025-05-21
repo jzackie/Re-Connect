@@ -1,9 +1,18 @@
-import React, { createContext, useState } from "react";
+import React, { createContext, useState, useEffect } from "react";
 
 export const NotificationContext = createContext();
 
 export const NotificationProvider = ({ children }) => {
-  const [notifications, setNotifications] = useState([]);
+  // Load notifications from localStorage on init
+  const [notifications, setNotifications] = useState(() => {
+    const stored = localStorage.getItem("notifications");
+    return stored ? JSON.parse(stored) : [];
+  });
+
+  // Save notifications to localStorage on change
+  useEffect(() => {
+    localStorage.setItem("notifications", JSON.stringify(notifications));
+  }, [notifications]);
 
   const addNotification = (message) => {
     const newNotification = {
@@ -20,3 +29,4 @@ export const NotificationProvider = ({ children }) => {
     </NotificationContext.Provider>
   );
 };
+

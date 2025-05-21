@@ -11,6 +11,7 @@ const LostAndFound = () => {
       reader.onerror = (error) => reject(error);
     });
 
+
   const [activeTab, setActiveTab] = useState(() => {
     return localStorage.getItem("lostFoundActiveTab") || "unclaimed";
   });
@@ -41,6 +42,7 @@ const LostAndFound = () => {
     status: "Unclaimed",
     image: null,
     imagePreview: null,
+    link: "",
   });
 
   const [editData, setEditData] = useState({
@@ -48,6 +50,7 @@ const LostAndFound = () => {
     location: "",
     foundDate: "",
     status: "Unclaimed",
+    link: "", // Added link here for editing
   });
 
   useEffect(() => {
@@ -73,6 +76,7 @@ const LostAndFound = () => {
       location: item.location,
       foundDate: item.foundDate,
       status: item.status,
+      link: item.link || "", // Populate link on edit
     });
     setIsEditing(false);
     setModalOpen(true);
@@ -100,12 +104,16 @@ const LostAndFound = () => {
       status: "Unclaimed",
       image: null,
       imagePreview: null,
+      link: "", // reset link on close
     });
   };
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
   };
 
   const handleImageChange = (e) => {
@@ -135,6 +143,7 @@ const LostAndFound = () => {
     }
 
     let base64Image = null;
+
     if (formData.image) {
       base64Image = await fileToBase64(formData.image);
     }
@@ -145,7 +154,8 @@ const LostAndFound = () => {
       location: formData.location,
       foundDate: formData.foundDate,
       status: formData.status,
-      image: base64Image,
+      image: base64Image, // Save base64 image string
+      link: formData.link,
     };
 
     setItems((prev) => {
@@ -161,6 +171,7 @@ const LostAndFound = () => {
     closeAdminModal();
     setActiveTab(formData.status.toLowerCase());
   };
+
 
   const handleEditChange = (e) => {
     const { name, value } = e.target;
@@ -189,6 +200,7 @@ const LostAndFound = () => {
         location: editData.location,
         foundDate: editData.foundDate,
         status: editData.status,
+        link: editData.link, // save updated link here
       };
 
       const newStatusKey = editData.status.toLowerCase();
@@ -205,6 +217,7 @@ const LostAndFound = () => {
       location: editData.location,
       foundDate: editData.foundDate,
       status: editData.status,
+      link: editData.link,
     }));
 
     setIsEditing(false);
@@ -249,6 +262,19 @@ const LostAndFound = () => {
           <p className="item-location">Location: {item.location}</p>
           <p className="item-date">Found Date: {item.foundDate}</p>
           <p className="item-status">Status: {item.status}</p>
+          {item.link && (
+            <p className="item-link">
+              Link:{" "}
+              <a
+                href={item.link}
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={(e) => e.stopPropagation()}
+              >
+                {item.link}
+              </a>
+            </p>
+          )}
         </div>
       </div>
     ));
@@ -308,6 +334,19 @@ const LostAndFound = () => {
                 <p>Location: {selectedItem.location}</p>
                 <p>Found Date: {selectedItem.foundDate}</p>
                 <p>Status: {selectedItem.status}</p>
+                {selectedItem.link && (
+                  <p>
+                    Link:{" "}
+                    <a
+                      href={selectedItem.link}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      onClick={(e) => e.stopPropagation()}
+                    >
+                      {selectedItem.link}
+                    </a>
+                  </p>
+                )}
 
                 <div className="modal-buttons">
                   <button onClick={() => setIsEditing(true)}>Edit</button>
@@ -357,6 +396,16 @@ const LostAndFound = () => {
                     <option value="Claimed">Claimed</option>
                   </select>
                 </label>
+                <label>
+                  Link:
+                  <input
+                    type="url"
+                    name="link"
+                    value={editData.link}
+                    onChange={handleEditChange}
+                    placeholder="https://example.com"
+                  />
+                </label>
 
                 <div className="modal-buttons">
                   <button onClick={handleSaveEdit}>Save</button>
@@ -368,11 +417,11 @@ const LostAndFound = () => {
         </div>
       )}
 
-      {/* Admin add new item modal */}
+      {/* Admin Add Item Modal */}
       {adminModalOpen && (
         <div className="modal" onClick={closeAdminModal}>
           <div className="modal-content" onClick={(e) => e.stopPropagation()}>
-            <h2>Add New Item</h2>
+            <h3>Add Item</h3>
             <form onSubmit={handleAddItem}>
               <label>
                 Description:
@@ -384,7 +433,6 @@ const LostAndFound = () => {
                   required
                 />
               </label>
-
               <label>
                 Location:
                 <input
@@ -395,7 +443,6 @@ const LostAndFound = () => {
                   required
                 />
               </label>
-
               <label>
                 Found Date:
                 <input
@@ -406,7 +453,6 @@ const LostAndFound = () => {
                   required
                 />
               </label>
-
               <label>
                 Status:
                 <select
@@ -418,20 +464,31 @@ const LostAndFound = () => {
                   <option value="Claimed">Claimed</option>
                 </select>
               </label>
-
+              <label>
+                Link:
+                <input
+                  type="url"
+                  name="link"
+                  value={formData.link}
+                  onChange={handleInputChange}
+                  placeholder="https://example.com"
+                />
+              </label>
               <label>
                 Image:
-                <input type="file" accept="image/*" onChange={handleImageChange} />
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={handleImageChange}
+                />
               </label>
-
               {formData.imagePreview && (
                 <img
                   src={formData.imagePreview}
                   alt="Preview"
-                  style={{ maxWidth: "100%", maxHeight: "200px", marginTop: "10px" }}
+                  className="image-preview"
                 />
               )}
-
               <div className="modal-buttons">
                 <button type="submit">Add Item</button>
                 <button type="button" onClick={closeAdminModal}>
@@ -457,3 +514,4 @@ const LostAndFound = () => {
 };
 
 export default LostAndFound;
+

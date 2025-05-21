@@ -12,6 +12,7 @@
     "multer": "^2.0.0",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
+    "react-linkify": "^1.0.0-alpha",
     "react-router-dom": "^7.5.3",
     "react-scripts": "5.0.1",
     "stream-chat": "^8.60.0",

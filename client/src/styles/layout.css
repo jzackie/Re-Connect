@@ -4,7 +4,6 @@ body {
   padding: 0;
   height: 100%;
   overflow: hidden; /* prevent overall scroll on body */
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
 .header {
@@ -33,9 +32,9 @@ body {
 /* Overall Layout Container */
 .layout {
   display: flex;
-  height: calc(100vh - 80px); /* full viewport height minus header */
+  height: calc(100vh - 80px);
   width: 100%;
-  overflow: hidden; /* prevent layout overflow */
+  overflow: hidden;
 }
 
 /* ========== SIDEBAR (Left Panel) ========== */
@@ -87,13 +86,10 @@ body {
 /* ========== MAIN CONTENT AREA (Center) ========== */
 .main-content {
   flex: 1;
-  background-color: #f5f6fa;
-  overflow-y: auto;
-  box-sizing: border-box;
-  min-width: 0;
   display: flex;
   flex-direction: column;
-  min-height: 0; /* added to fix flex shrinking */
+  overflow: hidden;   /* Prevent main-content from scrolling */
+  min-height: 0;      /* Critical: allows children like .item2 to overflow */
 }
 
 /* ========== SEARCH PANEL (Right Panel) ========== */
