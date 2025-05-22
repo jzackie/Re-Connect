@@ -20,7 +20,7 @@ if (!fs.existsSync(avatarDir)) {
   fs.mkdirSync(avatarDir, { recursive: true });
 }
 
-// Configure multer for avatar uploads
+// Multer config
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
     cb(null, avatarDir);
@@ -44,15 +44,15 @@ const fileFilter = (req, file, cb) => {
 
 const upload = multer({ storage, fileFilter });
 
-
-// Initialize Express app and server
+// Initialize app and server
 const app = express();
 const server = http.createServer(app);
 const PORT = process.env.PORT || 5000;
 
-// MongoDB connection
+// MongoDB connect
+const mongoUri = process.env.MONGO_URI || "mongodb://localhost:27017/reconnect";
 mongoose
-  .connect(process.env.MONGO_URI || "mongodb://localhost:27017/reconnect", {
+  .connect(mongoUri, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
     serverSelectionTimeoutMS: 5000,
@@ -75,7 +75,7 @@ app.use(express.json({ limit: "10mb" }));
 app.use(express.urlencoded({ extended: true, limit: "10mb" }));
 app.set("trust proxy", 1);
 
-// Serve public avatars folder
+// Serve static files once here
 app.use("/public", express.static(path.join(__dirname, "public")));
 
 // Socket.io setup
@@ -88,9 +88,8 @@ const io = new Server(server, {
 });
 app.set("io", io);
 
-// Socket.io events
 io.on("connection", (socket) => {
-  console.log("🟢 A user connected:", socket.id);
+  console.log("🟢 User connected:", socket.id);
 
   socket.on("join", (userId) => {
     socket.join(userId);
@@ -98,11 +97,11 @@ io.on("connection", (socket) => {
   });
 
   socket.on("disconnect", () => {
-    console.log("🔴 A user disconnected:", socket.id);
+    console.log("🔴 User disconnected:", socket.id);
   });
 });
 
-// ✅ Avatar upload endpoint
+// Avatar upload endpoint
 app.post("/upload/avatar", (req, res) => {
   upload.single("avatar")(req, res, function (err) {
     if (err instanceof multer.MulterError) {
@@ -132,16 +131,11 @@ app.use((req, res) => {
 // General error handler
 app.use((err, req, res, next) => {
   console.error("❗ Server Error:", err.stack);
-  res.status(500).send("Internal Server Error");
+  res.status(500).json({ message: "Internal Server Error" });
 });
 
 // Start server
 server.listen(PORT, () => {
   console.log(`🚀 Server running on port ${PORT}`);
-  console.log(
-    `➡️ MongoDB URI: ${
-      process.env.MONGODB_URI || "mongodb://localhost:27017/reconnect"
-    }`
-  );
+  console.log(`➡️ MongoDB URI: ${mongoUri}`);
 });
-

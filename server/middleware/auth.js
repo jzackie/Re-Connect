@@ -1,4 +1,3 @@
-// middleware/auth.js
 const jwt = require("jsonwebtoken");
 const User = require("../models/User");
 
@@ -11,7 +10,7 @@ const auth = async (req, res, next) => {
     const user = await User.findById(decoded.id);
     if (!user) throw new Error();
 
-    req.user = user; // 👈 You now have access to the logged-in user's info in routes
+    req.user = user;
     next();
   } catch {
     res.status(401).json({ error: "Unauthorized" });

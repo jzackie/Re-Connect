@@ -12,6 +12,7 @@ const cookies = new Cookies();
 const initialState = {
   fullName: '',
   username: '',
+  email: '',
   password: '',
   confirmPassword: '',
   phoneNumber: '',
@@ -39,65 +40,75 @@ const Auth = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const { fullName, username, password, phoneNumber, avatarFile } = form;
+    const { fullName, username, email, password, confirmPassword, phoneNumber, avatarFile } = form;
     const URL = 'http://localhost:5000/auth';
+
+    if (isSignup && password !== confirmPassword) {
+      alert("Passwords do not match");
+      return;
+    }
 
     try {
       if (isSignup) {
         const formData = new FormData();
         formData.append('fullName', fullName);
         formData.append('username', username);
+        formData.append('email', email);
         formData.append('password', password);
         formData.append('phoneNumber', phoneNumber);
         if (avatarFile) formData.append('avatar', avatarFile);
 
-        const { data: { token, userId, hashedPassword, avatarURL } } = await axios.post(
+        const { data } = await axios.post(
           `${URL}/signup`,
           formData,
-          {
-            headers: { 'Content-Type': 'multipart/form-data' },
-          }
+          { headers: { 'Content-Type': 'multipart/form-data' } }
         );
 
-        cookies.set('token', token);
-        cookies.set('username', username);
-        cookies.set('fullName', fullName);
-        cookies.set('userId', userId);
-        cookies.set('phoneNumber', phoneNumber);
-        cookies.set('avatarURL', avatarURL);
-        cookies.set('hashedPassword', hashedPassword);
+        const { token, userId, avatarURL } = data;
+
+        cookies.set('token', token, { path: '/' });
+        cookies.set('username', username, { path: '/' });
+        cookies.set('email', email, { path: '/' });
+        cookies.set('fullName', fullName, { path: '/' });
+        cookies.set('userId', userId, { path: '/' });
+        cookies.set('phoneNumber', phoneNumber, { path: '/' });
+        cookies.set('avatarURL', avatarURL, { path: '/' });
 
         await client.connectUser(
           {
             id: userId,
             name: username,
             fullName,
+            email,
             image: avatarURL,
             phoneNumber,
           },
           token
         );
-      } else {
-        const { data: { token, userId, fullName, avatarURL, hashedPassword, phoneNumber } } =
-          await axios.post(
-            `${URL}/login`,
-            { username, password },
-            { headers: { 'Content-Type': 'application/json' } }
-          );
 
-        cookies.set('token', token);
-        cookies.set('username', username);
-        cookies.set('fullName', fullName);
-        cookies.set('userId', userId);
-        cookies.set('phoneNumber', phoneNumber);
-        cookies.set('avatarURL', avatarURL);
-        cookies.set('hashedPassword', hashedPassword);
+      } else {
+        const { data } = await axios.post(
+          `${URL}/login`,
+          { username, password },
+          { headers: { 'Content-Type': 'application/json' } }
+        );
+
+        const { token, userId, fullName, avatarURL, phoneNumber, email } = data;
+
+        cookies.set('token', token, { path: '/' });
+        cookies.set('username', username, { path: '/' });
+        cookies.set('email', email, { path: '/' });
+        cookies.set('fullName', fullName, { path: '/' });
+        cookies.set('userId', userId, { path: '/' });
+        cookies.set('phoneNumber', phoneNumber, { path: '/' });
+        cookies.set('avatarURL', avatarURL, { path: '/' });
 
         await client.connectUser(
           {
             id: userId,
             name: username,
             fullName,
+            email,
             image: avatarURL,
             phoneNumber,
           },
@@ -105,9 +116,11 @@ const Auth = () => {
         );
       }
 
-      window.location.reload();
+      // Instead of reload, navigate to home or dashboard
+      window.location.href = '/lostAndFound'; // or any main route
+
     } catch (error) {
-      console.error("FULL ERROR:", error);
+      console.error("Auth error:", error);
       alert(error.response?.data?.message || 'Something went wrong');
     }
   };
@@ -127,16 +140,28 @@ const Auth = () => {
           <p>{isSignup ? 'Sign Up' : 'Sign In'}</p>
           <form onSubmit={handleSubmit}>
             {isSignup && (
-              <div className="auth__form-container_fields-content_input">
-                <label htmlFor="fullName">Full Name</label>
-                <input
-                  name="fullName"
-                  type="text"
-                  placeholder="Full Name"
-                  onChange={handleChange}
-                  required
-                />
-              </div>
+              <>
+                <div className="auth__form-container_fields-content_input">
+                  <label htmlFor="fullName">Full Name</label>
+                  <input
+                    name="fullName"
+                    type="text"
+                    placeholder="Full Name"
+                    onChange={handleChange}
+                    required
+                  />
+                </div>
+                <div className="auth__form-container_fields-content_input">
+                  <label htmlFor="email">Email</label>
+                  <input
+                    name="email"
+                    type="email"
+                    placeholder="Email"
+                    onChange={handleChange}
+                    required
+                  />
+                </div>
+              </>
             )}
             <div className="auth__form-container_fields-content_input">
               <label htmlFor="username">Username</label>
@@ -202,7 +227,7 @@ const Auth = () => {
               </div>
             )}
             <div className="auth__form-container_fields-content_button">
-              <button>{isSignup ? 'Sign Up' : 'Sign In'}</button>
+              <button type="submit">{isSignup ? 'Sign Up' : 'Sign In'}</button>
             </div>
           </form>
           <div className="auth__form-container_fields-account">
@@ -220,5 +245,3 @@ const Auth = () => {
 };
 
 export default Auth;
-
-

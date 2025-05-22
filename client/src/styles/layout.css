@@ -29,9 +29,11 @@ body {
   margin-left: 15px;
 }
 
-/* Overall Layout Container */
+/* ========== OVERALL LAYOUT CONTAINER ========== */
+/* Using CSS Grid to balance sidebar, main-content, and search-panel */
 .layout {
-  display: flex;
+  display: grid;
+  grid-template-columns: 20% 1fr 20%;
   height: calc(100vh - 80px);
   width: 100%;
   overflow: hidden;
@@ -39,63 +41,71 @@ body {
 
 /* ========== SIDEBAR (Left Panel) ========== */
 .sidebar {
-  width: 20%;
-  color: rgb(255, 255, 255);
   display: flex;
-  flex-direction: column; /* keep it vertical */
-  align-items: flex-start; /* align items to left, not flex-end */
-  padding: 3rem;
+  flex-direction: column;
   border-right: 0.5px solid #cccccc94;
+  align-items: center;
+  padding: 1rem 0.5rem;
+  background-color: var(--sidebar-bg);
+  /* width removed, controlled by grid now */
+}
+
+.sidebar-profile {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 2rem;
+}
+
+.sidebar-profile-img {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  object-fit: cover;
+  margin-bottom: 0.5rem;
+}
+
+.sidebar-username {
+  font-size: 0.9rem;
+  font-weight: 500;
+  text-align: center;
+  color: var(--text-color);
 }
 
 .sidebar-nav ul {
   list-style: none;
   padding: 0;
-  margin: 0;
   width: 100%;
-  display: flex;           /* add flex */
-  flex-direction: column;  /* vertical list */
 }
 
 .sidebar-nav li {
-  margin-bottom: 1rem;
-  width: 100%;
-  display: block;          /* block to stack vertically */
+  padding: 0.75rem;
+  text-align: left;
 }
 
-.sidebar-nav a {
+.sidebar-nav li a {
+  color: var(--text-color);
   text-decoration: none;
-  color: rgb(0, 0, 0);
-  padding: 0.5rem 0.75rem;
-  display: block;          /* make links block to fill li horizontally */
-  border-radius: 8px;
-  transition: background 0.2s;
-}
-
-.sidebar-nav a:hover {
-  background-color: #1E3A8A;
-  color: #ffffff;
+  display: block;
+  transition: background-color 0.3s;
 }
 
 .sidebar-nav li.active a {
-  background-color: #1E3A8A;
-  color: #ffffff;
   font-weight: bold;
+  background-color: var(--highlight);
+  border-radius: 5px;
 }
 
 /* ========== MAIN CONTENT AREA (Center) ========== */
 .main-content {
-  flex: 1;
+  overflow-y: auto;   /* Scroll inside main content */
+  min-height: 0;      /* allow children to overflow */
   display: flex;
   flex-direction: column;
-  overflow: hidden;   /* Prevent main-content from scrolling */
-  min-height: 0;      /* Critical: allows children like .item2 to overflow */
 }
 
 /* ========== SEARCH PANEL (Right Panel) ========== */
 .search-panel {
-  width: 20%;
-  min-width: 220px; /* optional for usability */
   background-color: #ffffff;
   padding: 1.5rem;
   display: flex;
@@ -105,6 +115,7 @@ body {
   height: 100%;
   box-sizing: border-box;
   overflow-y: auto; /* scroll inside search panel */
+  /* width removed, controlled by grid now */
 }
 
 /* Search input styling */
@@ -162,3 +173,4 @@ body {
   align-items: center;
   justify-content: center;
 }
+  

@@ -1,11 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { Outlet } from 'react-router-dom';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import Cookies from 'universal-cookie';
-import { useNavigate } from 'react-router-dom';
 
-import { client } from '../streamClient.js'
-import { ChannelSearch } from './messages/components/'
+import { client } from '../streamClient.js';
+import { ChannelSearch } from './messages/components/';
 
 import LogoutIcon from '../assets/icons/exit.png';
 import logo from '../assets/icons/white.png';
@@ -15,26 +14,57 @@ import '../styles/layout.css';
 const cookies = new Cookies();
 
 const Layout = ({ children, setToggleContainer, theme, setTheme, setAuthToken }) => {
-  const defaultTheme = theme || 'system';
-  const html = document.documentElement;
   const navigate = useNavigate();
+  const location = useLocation();
 
+  const isActive = (path) => location.pathname === path ? 'active' : '';
+
+  const [loading, setLoading] = useState(true);
+  const [user, setUser] = useState(null);
+
+  // Check auth token on mount; redirect if missing
   useEffect(() => {
-    if(!cookies.get('token')) {
+    const token = cookies.get('token');
+    if (!token) {
       navigate('/');
+      return;
+    }
+
+    // Wait for client user to be connected
+    if (client.user) {
+      setUser(client.user);
+      setLoading(false);
+    } else {
+      // Try connecting user from cookies if client.user not set
+      const userId = cookies.get('userId');
+      if (!userId) {
+        navigate('/');
+        return;
+      }
+      // Reconnect user on client
+      client.connectUser(
+        {
+          id: userId,
+          name: cookies.get('username'),
+          fullName: cookies.get('fullName'),
+          email: cookies.get('email'),
+          image: cookies.get('avatarURL'),
+          phoneNumber: cookies.get('phoneNumber'),
+        },
+        token
+      ).then(() => {
+        setUser(client.user);
+        setLoading(false);
+      }).catch(() => {
+        // Failed to connect user
+        navigate('/');
+      });
     }
   }, [navigate]);
 
-  const location = useLocation();
-  
-  const isActive = (path) => location.pathname === path ? 'active' : '';
-  
-  const [query, setQuery] = useState('');
-  const [loading, setLoading] = useState(false);
-
+  // Theme effect
   useEffect(() => {
     const html = document.documentElement;
-
     const effectiveTheme =
       theme === 'system'
         ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light')
@@ -43,26 +73,6 @@ const Layout = ({ children, setToggleContainer, theme, setTheme, setAuthToken })
     html.classList.remove('light', 'dark');
     html.classList.add(effectiveTheme);
   }, [theme]);
-
-
-  const getChannels = async (text) => {
-    try {
-      // TODO: FETCH CHANNELS
-    } catch (error) {
-      setQuery('')
-    }
-  }
-
-  const onSearch = (event) => {
-    event.preventDefault();
-
-    setLoading(true);
-    setQuery(event.target.value);
-    getChannels(event.target.value);
-  }
-
-  const user = client.user;
-  const userAvatar = user?.image
 
   const logout = () => {
     cookies.remove('token', { path: '/' });
@@ -73,9 +83,14 @@ const Layout = ({ children, setToggleContainer, theme, setTheme, setAuthToken })
     cookies.remove('hashedPassword', { path: '/' });
     cookies.remove('phoneNumber', { path: '/' });
 
-    setAuthToken(null); // Update App state to reflect logout
-    navigate('/'); // Redirect to Auth page
+    setAuthToken(null);
+    client.disconnectUser(); // Disconnect Stream client user on logout
+    navigate('/');
   };
+
+  if (loading) {
+    return <div>Loading...</div>; // Or a spinner
+  }
 
   return (
     <>
@@ -83,19 +98,10 @@ const Layout = ({ children, setToggleContainer, theme, setTheme, setAuthToken })
       <header className="header">
         <img src={logo} alt="reconnect logo" className="logo" />
 
-        <div className='header-right'>
-          <div className="profile-circle">
-            <img 
-              src={userAvatar || '/default-avatar.png'}
-              alt="Profile"
-              className="profile-img"
-            />
-          </div>
-
-          <div className='header-logout__icon'>
-            <div className='header-logout__icon-inner' onClick={logout}>
-              <img src={LogoutIcon} alt='Logout Image' 
-              preview={logout}/>
+        <div className="header-right">
+          <div className="header-logout__icon">
+            <div className="header-logout__icon-inner" onClick={logout} role="button" tabIndex={0}>
+              <img src={LogoutIcon} alt="Logout" />
             </div>
           </div>
         </div>
@@ -105,6 +111,15 @@ const Layout = ({ children, setToggleContainer, theme, setTheme, setAuthToken })
       <div className="layout">
         {/* Sidebar */}
         <aside className="sidebar">
+          <div className="sidebar-profile">
+            <img
+              src={user?.image || '/default-avatar.png'}
+              alt="Profile"
+              className="sidebar-profile-img"
+            />
+            <p className="sidebar-username">{user?.fullName || user?.name || 'User'}</p>
+          </div>
+
           <nav className="sidebar-nav">
             <ul>
               <li className={isActive('/lostAndFound')}>
@@ -138,3 +153,4 @@ const Layout = ({ children, setToggleContainer, theme, setTheme, setAuthToken })
 };
 
 export default Layout;
+

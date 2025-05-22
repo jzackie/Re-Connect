@@ -3,118 +3,118 @@ const { StreamChat } = require("stream-chat");
 const dotenv = require("dotenv");
 const User = require("../models/User");
 const Notification = require("../models/Notification");
+const path = require("path");
+const fs = require("fs");
 
 dotenv.config();
 
 const api_key = process.env.STREAM_API_KEY;
 const api_secret = process.env.STREAM_API_SECRET;
 
+const avatarDir = path.join(__dirname, "..", "public", "avatars");
+
+// Ensure avatar folder exists
+if (!fs.existsSync(avatarDir)) {
+  fs.mkdirSync(avatarDir, { recursive: true });
+}
+
 // Signup Controller
-const signup = async (req, res) => {
+// Signup Controller
+exports.signup = async (req, res) => {
   try {
-    const { fullName, username, password, phoneNumber } = req.body;
-    const avatarFile = req.file;
+    const { fullName, username, email, password, phoneNumber } = req.body;
 
-    // Validate fields (as you do)
+    if (
+      typeof username !== "string" ||
+      typeof fullName !== "string" ||
+      typeof email !== "string" ||
+      typeof password !== "string" ||
+      typeof phoneNumber !== "string" ||
+      !username.trim() || !fullName.trim() || !email.trim() || !password.trim() || !phoneNumber.trim()
+    ) {
+      return res.status(400).json({ message: "Please fill in all required fields" });
+    }
 
-    // Create hashed password
+    const existingUser = await User.findOne({ $or: [{ username }, { email }] });
+    if (existingUser) {
+      const conflictField = existingUser.username === username ? "Username" : "Email";
+      return res.status(409).json({ message: `${conflictField} already taken` });
+    }
+
+    let avatarURL = null;
+    if (req.file) {
+      const ext = path.extname(req.file.originalname);
+      const fileName = Date.now() + "-" + username + ext;
+      const filePath = path.join(avatarDir, fileName);
+      // Save file buffer to disk
+      fs.writeFileSync(filePath, req.file.buffer);
+
+      // Make sure your Express static middleware is configured correctly:
+      avatarURL = `${req.protocol}://${req.get("host")}/public/avatars/${fileName}`;
+    }
+
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    // Save user to your MongoDB (with Mongoose)
-    const newUser = await User.create({
-      name: fullName,
-      email: username,
-      password: hashedPassword,
-      contact: phoneNumber,        // matches schema
-      avatarURL: avatarFile ? `/public/avatars/${Date.now()}-${avatarFile.originalname}` : null,
-    });
-
-    // Generate Stream Chat user ID - can be MongoDB _id or a new ID
-    const userId = newUser._id.toString();  // Use MongoDB _id as Stream user ID
-
-    // Create or update user in Stream Chat
-    const serverClient = StreamChat.getInstance(api_key, api_secret);
-
-    await serverClient.upsertUser({
-      id: userId,
-      name: username,
-      fullName,
-      image: newUser.avatarURL,
-      phoneNumber,
-    });
-
-    // Create a Stream Chat token for that user
-    const token = serverClient.createToken(userId);
-
-    // Respond with needed data including the MongoDB userId
-    res.status(200).json({
-      token,
+    const newUser = new User({
       fullName,
       username,
-      userId,
+      email,
+      password: hashedPassword,
       phoneNumber,
+      avatarURL,
+    });
+
+    await newUser.save();
+
+    res.status(201).json({
+      message: "User registered successfully",
+      userId: newUser._id,
+      username: newUser.username,
+      fullName: newUser.fullName,
+      email: newUser.email,
+      phoneNumber: newUser.phoneNumber,
       avatarURL: newUser.avatarURL,
     });
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: error.message || "Signup error" });
+    console.error("Signup error:", error);
+    res.status(500).json({ message: "Internal server error" });
   }
 };
 
-
 // Login Controller
-const login = async (req, res) => {
+exports.login = async (req, res) => {
   try {
     const { username, password } = req.body;
 
     if (!username || !password) {
-      return res.status(400).json({ message: "Username and password required" });
+      return res.status(400).json({ message: "Username and password required." });
     }
 
-    const existingUser = await User.findOne({ email: username });
+    const existingUser = await User.findOne({ username });
 
     if (!existingUser) {
-      return res.status(400).json({ message: "User not found" });
+      return res.status(400).json({ message: "User not found." });
     }
 
     const isPasswordCorrect = await bcrypt.compare(password, existingUser.password);
     if (!isPasswordCorrect) {
-      return res.status(401).json({ message: "Incorrect password" });
+      return res.status(401).json({ message: "Incorrect password." });
     }
 
     const client = StreamChat.getInstance(api_key, api_secret);
     const token = client.createToken(existingUser._id.toString());
 
-    const dbUsers = await User.find({}, "_id");
-    const notifications = dbUsers.map((user) => ({
-      userId: user._id,
-      type: "user_login",
-      message: `${existingUser.name} has logged in.`,
-      isRead: false,
-    }));
-    await Notification.insertMany(notifications);
-
-    const io = req.app.get("io");
-    if (io) {
-      io.emit("notification", {
-        type: "user_login",
-        message: `${existingUser.name} has logged in.`,
-      });
-    }
-
     res.status(200).json({
       token,
-      fullName: existingUser.name,
-      username: existingUser.email,
       userId: existingUser._id,
-      hashedPassword: existingUser.password,
-      phoneNumber: existingUser.contact,
+      fullName: existingUser.fullName,
+      username: existingUser.username,
+      email: existingUser.email,
+      phoneNumber: existingUser.phoneNumber,
       avatarURL: existingUser.avatarURL || null,
     });
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: error.message || "Login error" });
+    console.error("Login error:", error);
+    res.status(500).json({ message: "Internal server error" });
   }
 };
-
-module.exports = { signup, login };
