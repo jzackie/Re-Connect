@@ -71,6 +71,65 @@
   opacity: 0.75;
 }
 
+.dark .auth__form-container_fields-content {
+    background-color: #0d1117;
+    box-shadow: 0 0 10px rgba(0, 224, 255, 0.2);
+    border: 1px solid #00e0ff;
+    border-radius: 0;
+}
+
+.dark .auth__form-container_fields-content p {
+    color: #e6f1ff;
+}
+
+.dark .auth__form-container_fields-content_input label {
+    color: #9acaff;
+}
+
+.dark .auth__form-container_fields-content_input input {
+    background-color: #0d1117;
+    color: #e6f1ff;
+    border: 1px solid #00e0ff;
+    border-radius: 0;
+}
+
+.dark .auth__form-container_fields-content_input input::placeholder {
+    color: #7892b0;
+}
+
+.dark .auth__form-container_fields-content_input input:focus,
+.dark .auth__form-container_fields-content_input input:active {
+    box-shadow: 0px 0px 5px 2px #00e0ff;
+    border-color: #00e0ff;
+}
+
+.dark .auth__form-container_fields-content_button button {
+    background-color: #00e0ff;
+    border: 1px solid #00e0ff;
+    color: #0d1117;
+    border-radius: 0;
+    transition: 0.3s ease;
+}
+
+.dark .auth__form-container_fields-content_button button:hover {
+    box-shadow: 0 0 10px #00e0ff;
+    background-color: #00b2d6;
+}
+
+.dark .auth__form-container_fields-account p,
+.dark .auth__form-container_fields-account span {
+    color: #e6f1ff;
+}
+
+.dark .auth__form-container_fields-account span:hover {
+    color: violet;
+    text-decoration: underline;
+}
+
+.dark .auth__form-container_image img {
+  filter: brightness(100) contrast(0) saturate(10);
+}
+
 /* Profile */
 .dark .profile-circle {
   background-color: #1a1d25;
