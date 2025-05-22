@@ -84,17 +84,16 @@ const Layout = ({ children, setToggleContainer, theme, setTheme, setAuthToken })
     cookies.remove('phoneNumber', { path: '/' });
 
     setAuthToken(null);
-    client.disconnectUser(); // Disconnect Stream client user on logout
+    client.disconnectUser(); 
     navigate('/');
   };
 
   if (loading) {
-    return <div>Loading...</div>; // Or a spinner
+    return <div>Loading...</div>; 
   }
 
   return (
     <>
-      {/* HEADER */}
       <header className="header">
         <img src={logo} alt="reconnect logo" className="logo" />
 
@@ -107,9 +106,7 @@ const Layout = ({ children, setToggleContainer, theme, setTheme, setAuthToken })
         </div>
       </header>
 
-      {/* MAIN LAYOUT */}
       <div className="layout">
-        {/* Sidebar */}
         <aside className="sidebar">
           <div className="sidebar-profile">
             <img
@@ -138,12 +135,10 @@ const Layout = ({ children, setToggleContainer, theme, setTheme, setAuthToken })
           </nav>
         </aside>
 
-        {/* Main Content */}
         <main className="main-content">
           <Outlet context={{ setTheme, theme }} />
         </main>
 
-        {/* Search Panel */}
         <aside className="search-panel">
           <ChannelSearch setToggleContainer={setToggleContainer} />
         </aside>

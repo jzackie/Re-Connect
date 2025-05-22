@@ -37,13 +37,11 @@ router.get("/", async (req, res) => {
   }
 });
 
-// POST new item (protected)
 router.post("/", auth, upload.single("imageFile"), async (req, res) => {
   const { title, description, location, status } = req.body;
   try {
     const postedBy = req.user._id;
 
-    // Handle image url from uploaded file
     let image = "";
     if (req.file) {
       image = `/uploads/${req.file.filename}`;
@@ -58,7 +56,6 @@ router.post("/", auth, upload.single("imageFile"), async (req, res) => {
       postedBy,
     });
 
-    // Notify all users
     const users = await User.find({}, "_id");
     const notifications = users.map((user) => ({
       userId: user._id,
@@ -68,7 +65,6 @@ router.post("/", auth, upload.single("imageFile"), async (req, res) => {
     }));
     await Notification.insertMany(notifications);
 
-    // Emit real-time notifications
     const io = req.app.get("io");
     if (io) {
       users.forEach((user) => {
@@ -87,15 +83,13 @@ router.post("/", auth, upload.single("imageFile"), async (req, res) => {
   }
 });
 
-// PATCH mark item as claimed (protected)
 router.patch("/:id/claim", auth, async (req, res) => {
   try {
     const item = await Item.findById(req.params.id);
     if (!item) return res.status(404).json({ error: "Item not found" });
 
-    // Add your admin check here if needed
     item.claimedBy = req.user._id;
-    item.status = "claimed"; // update status as well if you want
+    item.status = "claimed"; 
     await item.save();
 
     res.json(item);

@@ -3,7 +3,6 @@ const mongoose = require("mongoose");
 const router = express.Router();
 const Notification = require("../models/Notification");
 
-// Get all notifications for a user (with optional unread filter)
 router.get("/:userId", async (req, res) => {
   try {
     const { unread } = req.query;
@@ -26,7 +25,6 @@ router.get("/:userId", async (req, res) => {
   }
 });
 
-// Mark a single notification as read
 router.patch("/:id/read", async (req, res) => {
   try {
     if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
@@ -49,7 +47,6 @@ router.patch("/:id/read", async (req, res) => {
   }
 });
 
-// Mark all notifications as read for a user
 router.patch("/mark-all/:userId", async (req, res) => {
   try {
     if (!mongoose.Types.ObjectId.isValid(req.params.userId)) {

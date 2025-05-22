@@ -1,5 +1,3 @@
-// src/streamClient.js
-
 import { StreamChat } from 'stream-chat';
 import Cookies from 'universal-cookie';
 

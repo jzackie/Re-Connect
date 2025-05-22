@@ -313,7 +313,6 @@ const LostAndFound = () => {
         {renderItems(items.claimed)}
       </div>
 
-      {/* Item details modal */}
       {modalOpen && selectedItem && (
         <div className="modal" onClick={closeModal}>
           <div className="modal-content" onClick={(e) => e.stopPropagation()}>
@@ -417,7 +416,6 @@ const LostAndFound = () => {
         </div>
       )}
 
-      {/* Admin Add Item Modal */}
       {adminModalOpen && (
         <div className="modal" onClick={closeAdminModal}>
           <div className="modal-content" onClick={(e) => e.stopPropagation()}>
@@ -500,7 +498,6 @@ const LostAndFound = () => {
         </div>
       )}
 
-      {/* Floating admin button */}
       <button
         className="floating-admin-button"
         onClick={openAdminModal}

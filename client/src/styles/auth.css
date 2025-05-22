@@ -5,8 +5,6 @@ body {
     height: 100%;
 }
 
-/* ========== FORM ========== */
-
 .auth__form-container {
     min-height: 100vh;
     display: flex;
@@ -143,8 +141,6 @@ body {
     cursor: pointer;
     font-weight: 700;
 }
-
-/* ========== IMAGE ========== */
 
 .auth__form-container_image {
     flex: 1 1 400px;

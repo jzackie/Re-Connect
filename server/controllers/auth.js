@@ -13,13 +13,10 @@ const api_secret = process.env.STREAM_API_SECRET;
 
 const avatarDir = path.join(__dirname, "..", "public", "avatars");
 
-// Ensure avatar folder exists
 if (!fs.existsSync(avatarDir)) {
   fs.mkdirSync(avatarDir, { recursive: true });
 }
 
-// Signup Controller
-// Signup Controller
 exports.signup = async (req, res) => {
   try {
     const { fullName, username, email, password, phoneNumber } = req.body;
@@ -46,10 +43,9 @@ exports.signup = async (req, res) => {
       const ext = path.extname(req.file.originalname);
       const fileName = Date.now() + "-" + username + ext;
       const filePath = path.join(avatarDir, fileName);
-      // Save file buffer to disk
+
       fs.writeFileSync(filePath, req.file.buffer);
 
-      // Make sure your Express static middleware is configured correctly:
       avatarURL = `${req.protocol}://${req.get("host")}/public/avatars/${fileName}`;
     }
 
@@ -81,7 +77,6 @@ exports.signup = async (req, res) => {
   }
 };
 
-// Login Controller
 exports.login = async (req, res) => {
   try {
     const { username, password } = req.body;

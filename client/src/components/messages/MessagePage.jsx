@@ -1,5 +1,3 @@
-/* ========== WRAPPER ========== */
-
 import React, { useState } from 'react';
 import { useOutletContext } from 'react-router-dom';
 import { Chat } from 'stream-chat-react';
