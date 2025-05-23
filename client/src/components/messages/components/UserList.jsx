@@ -52,6 +52,7 @@ const UserList = ({ setSelectedUsers }) => {
     const [listEmpty, setListEmpty] = useState(false);
     const [error, setError] = useState(false);
 
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     useEffect(() => {
         const getUsers = async () => {
             if (!client || loading) return;
