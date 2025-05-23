@@ -4,7 +4,7 @@ import { Link, useLocation, useNavigate } from 'react-router-dom';
 import Cookies from 'universal-cookie';
 
 import { client } from '../streamClient.js';
-import { ChannelSearch } from './messages/components/';
+// import { ChannelSearch } from './messages/components/';
 
 import LogoutIcon from '../assets/icons/exit.png';
 import logo from '../assets/icons/white.png';
