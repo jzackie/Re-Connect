@@ -53,32 +53,30 @@ const UserList = ({ setSelectedUsers }) => {
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
     useEffect(() => {
-        const getUsers = async () => {
-            if (loading) return;
+    const getUsers = async () => {
+        if (loading) return;
 
-            setLoading(true);
-            
-            try {
-                const response = await client.queryUsers(
-                    { id: { $ne: client.userID } },
-                    { id: 1 },
-                    { limit: 8 } 
-                );
+        setLoading(true);
+        try {
+        const response = await client.queryUsers(
+            { id: { $ne: client.userID } },
+            { id: 1 },
+            { limit: 8 }
+        );
 
-                if (response.users.length) {
-                    setUsers(response.users);
-                } else {
-                    setListEmpty(true);
-                }
-            } catch (error) {
-                setError(true);
-            }
-            setLoading(false);
-        };
+        if (response.users.length) {
+            setUsers(response.users);
+        } else {
+            setListEmpty(true);
+        }
+        } catch (error) {
+        setError(true);
+        }
+        setLoading(false);
+    };
 
-        if (client) getUsers();
+    if (client) getUsers();
     }, []);
-
 
     if(error) {
         return (
