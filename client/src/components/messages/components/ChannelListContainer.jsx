@@ -4,6 +4,7 @@ import Cookies from 'universal-cookie';
 
 import { TeamChannelList, TeamChannelPreview } from './';
 
+// eslint-disable-next-line no-unused-vars
 const cookies = new Cookies();
 
 const customChannelTeamFilter = (channels) => {
