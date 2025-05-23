@@ -1,2 +1,2 @@
 # Re-Connect
-Messaging App
+Messaging App with a Lost and Found feature
