@@ -12,12 +12,12 @@ const cookies = new Cookies();
 const initialState = {
   fullName: '',
   username: '',
-  email: '',
+  // email: '',
   password: '',
   confirmPassword: '',
   phoneNumber: '',
-  avatarFile: null,
-  avatarPreview: null,
+  // avatarFile: null,
+  // avatarPreview: null,
 };
 
 const Auth = () => {
@@ -40,7 +40,7 @@ const Auth = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const { fullName, username, email, password, confirmPassword, phoneNumber, avatarFile } = form;
+    const { fullName, username, password, confirmPassword, phoneNumber, avatarFile } = form;
     const URL = 'http://localhost:5000/auth';
 
     if (isSignup && password !== confirmPassword) {
@@ -53,34 +53,35 @@ const Auth = () => {
         const formData = new FormData();
         formData.append('fullName', fullName);
         formData.append('username', username);
-        formData.append('email', email);
+        // formData.append('email', email);
         formData.append('password', password);
         formData.append('phoneNumber', phoneNumber);
-        if (avatarFile) formData.append('avatar', avatarFile);
+        // if (avatarFile) formData.append('avatar', avatarFile);
 
         const { data } = await axios.post(
           `${URL}/signup`,
           formData,
           { headers: { 'Content-Type': 'multipart/form-data' } }
         );
+        console.log("Signup response data:", data);
 
-        const { token, userId, avatarURL } = data;
+        const { token, userId } = data;
 
         cookies.set('token', token, { path: '/' });
         cookies.set('username', username, { path: '/' });
-        cookies.set('email', email, { path: '/' });
+        // cookies.set('email', email, { path: '/' });
         cookies.set('fullName', fullName, { path: '/' });
         cookies.set('userId', userId, { path: '/' });
         cookies.set('phoneNumber', phoneNumber, { path: '/' });
-        cookies.set('avatarURL', avatarURL, { path: '/' });
+        // cookies.set('avatarURL', avatarURL, { path: '/' });
 
         await client.connectUser(
           {
             id: userId,
             name: username,
             fullName,
-            email,
-            image: avatarURL,
+            // email,
+            // image: avatarURL,
             phoneNumber,
           },
           token
@@ -93,23 +94,23 @@ const Auth = () => {
           { headers: { 'Content-Type': 'application/json' } }
         );
 
-        const { token, userId, fullName, avatarURL, phoneNumber, email } = data;
+        const { token, userId, fullName, avatarURL, phoneNumber } = data;
 
         cookies.set('token', token, { path: '/' });
         cookies.set('username', username, { path: '/' });
-        cookies.set('email', email, { path: '/' });
+        // cookies.set('email', email, { path: '/' });
         cookies.set('fullName', fullName, { path: '/' });
         cookies.set('userId', userId, { path: '/' });
         cookies.set('phoneNumber', phoneNumber, { path: '/' });
-        cookies.set('avatarURL', avatarURL, { path: '/' });
+        // cookies.set('avatarURL', avatarURL, { path: '/' });
 
         await client.connectUser(
           {
             id: userId,
             name: username,
             fullName,
-            email,
-            image: avatarURL,
+            // email,
+            // image: avatarURL,
             phoneNumber,
           },
           token
@@ -151,7 +152,7 @@ const Auth = () => {
                     required
                   />
                 </div>
-                <div className="auth__form-container_fields-content_input">
+                {/* <div className="auth__form-container_fields-content_input">
                   <label htmlFor="email">Email</label>
                   <input
                     name="email"
@@ -160,7 +161,7 @@ const Auth = () => {
                     onChange={handleChange}
                     required
                   />
-                </div>
+                </div> */}
               </>
             )}
             <div className="auth__form-container_fields-content_input">
@@ -185,7 +186,7 @@ const Auth = () => {
                 />
               </div>
             )}
-            {isSignup && (
+            {/* {isSignup && (
               <div className="auth__form-container_fields-content_input">
                 <label htmlFor="avatarFile">Choose Avatar Image</label>
                 <input
@@ -203,7 +204,7 @@ const Auth = () => {
                   />
                 )}
               </div>
-            )}
+            )} */}
             <div className="auth__form-container_fields-content_input">
               <label htmlFor="password">Password</label>
               <input

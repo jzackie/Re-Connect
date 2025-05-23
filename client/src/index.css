@@ -2,6 +2,31 @@
     font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
 }
 
+.welcome-page {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  text-align: center;
+  background: linear-gradient(to right, #fdf6e3, #e0f7fa);
+  color: #333;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  padding: 20px;
+}
+
+.welcome-page h1 {
+  font-size: 2.5rem;
+  color: #00796b;
+  margin-bottom: 0.5rem;
+}
+
+.welcome-page p {
+  font-size: 1.25rem;
+  color: #555;
+}
+
+
 .dark {
   --sidebar-bg: #0f1117;
   --text-color: #e6f1ff;

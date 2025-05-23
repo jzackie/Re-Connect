@@ -88,6 +88,8 @@ const Layout = ({ children, setToggleContainer, theme, setTheme, setAuthToken })
     navigate('/');
   };
 
+  window.logout = logout;
+
   if (loading) {
     return <div>Loading...</div>; 
   }
@@ -109,11 +111,11 @@ const Layout = ({ children, setToggleContainer, theme, setTheme, setAuthToken })
       <div className="layout">
         <aside className="sidebar">
           <div className="sidebar-profile">
-            <img
+            {/* <img
               src={user?.image || '/default-avatar.png'}
               alt="Profile"
               className="sidebar-profile-img"
-            />
+            /> */}
             <p className="sidebar-username">{user?.fullName || user?.name || 'User'}</p>
           </div>
 
@@ -140,7 +142,7 @@ const Layout = ({ children, setToggleContainer, theme, setTheme, setAuthToken })
         </main>
 
         <aside className="search-panel">
-          <ChannelSearch setToggleContainer={setToggleContainer} />
+          {/* <ChannelSearch setToggleContainer={setToggleContainer} /> */}
         </aside>
       </div>
     </>

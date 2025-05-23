@@ -66,7 +66,15 @@ const App = () => {
             <Route path="/lostAndFound" element={<LostAndFoundPage />} />
             <Route path="/notifications" element={<Notification />} />
             <Route path="/settings" element={<Settings />} />
-            <Route path="*" element={<div>Welcome to Re:Connect!</div>} />
+            <Route
+              path="*"
+              element={
+                <div className="welcome-page">
+                  <h1>Welcome to re:connect!</h1>
+                  <p>Choose where to go to start off.</p>
+                </div>
+              }
+            />
           </Route>
         )}
       </Routes>

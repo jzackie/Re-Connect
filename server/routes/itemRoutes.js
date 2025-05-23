@@ -29,7 +29,7 @@ const upload = multer({ storage });
 // GET all items
 router.get("/", async (req, res) => {
   try {
-    const items = await Item.find().populate("postedBy", "name email");
+    const items = await Item.find().populate("postedBy", "username");
     res.json(items);
   } catch (err) {
     console.error(err);

@@ -19,57 +19,66 @@ if (!fs.existsSync(avatarDir)) {
 
 exports.signup = async (req, res) => {
   try {
-    const { fullName, username, email, password, phoneNumber } = req.body;
+    const { fullName, username, password, phoneNumber } = req.body;
 
     if (
       typeof username !== "string" ||
       typeof fullName !== "string" ||
-      typeof email !== "string" ||
+      // typeof email !== "string" ||
       typeof password !== "string" ||
       typeof phoneNumber !== "string" ||
-      !username.trim() || !fullName.trim() || !email.trim() || !password.trim() || !phoneNumber.trim()
+      !username.trim() || !fullName.trim() || !password.trim() || !phoneNumber.trim()
     ) {
       return res.status(400).json({ message: "Please fill in all required fields" });
     }
 
-    const existingUser = await User.findOne({ $or: [{ username }, { email }] });
+    // const existingUser = await User.findOne({ $or: [{ username }, { email }] });
+    // if (existingUser) {
+    //     const conflictField = existingUser.username === username ? "Username" : "Email";
+    //     return res.status(409).json({ message: `${conflictField} already taken` });
+    //   }
+
+    const existingUser = await User.findOne({ username });
     if (existingUser) {
-      const conflictField = existingUser.username === username ? "Username" : "Email";
-      return res.status(409).json({ message: `${conflictField} already taken` });
+      return res.status(409).json({ message: "Username already taken" });
     }
 
-    let avatarURL = null;
-    if (req.file) {
-      const ext = path.extname(req.file.originalname);
-      const fileName = Date.now() + "-" + username + ext;
-      const filePath = path.join(avatarDir, fileName);
+    // let avatarURL = null;
+    // if (req.file) {
+    //   const ext = path.extname(req.file.originalname);
+    //   const fileName = Date.now() + "-" + username + ext;
+    //   const filePath = path.join(avatarDir, fileName);
 
-      fs.writeFileSync(filePath, req.file.buffer);
+    //   fs.writeFileSync(filePath, req.file.buffer);
 
-      avatarURL = `${req.protocol}://${req.get("host")}/public/avatars/${fileName}`;
-    }
+    //   avatarURL = `${req.protocol}://${req.get("host")}/public/avatars/${fileName}`;
+    // }
 
     const hashedPassword = await bcrypt.hash(password, 10);
 
     const newUser = new User({
       fullName,
       username,
-      email,
+      // email,
       password: hashedPassword,
       phoneNumber,
-      avatarURL,
+      // avatarURL,
     });
 
     await newUser.save();
 
+    const client = StreamChat.getInstance(api_key, api_secret);
+    const token = client.createToken(newUser._id.toString());
+
     res.status(201).json({
       message: "User registered successfully",
+      token,
       userId: newUser._id,
       username: newUser.username,
       fullName: newUser.fullName,
-      email: newUser.email,
+      // email: newUser.email,
       phoneNumber: newUser.phoneNumber,
-      avatarURL: newUser.avatarURL,
+      // avatarURL: newUser.avatarURL,
     });
   } catch (error) {
     console.error("Signup error:", error);
@@ -100,13 +109,14 @@ exports.login = async (req, res) => {
     const token = client.createToken(existingUser._id.toString());
 
     res.status(200).json({
+      message: "Login successful",
       token,
       userId: existingUser._id,
       fullName: existingUser.fullName,
       username: existingUser.username,
-      email: existingUser.email,
+      // email: existingUser.email,
       phoneNumber: existingUser.phoneNumber,
-      avatarURL: existingUser.avatarURL || null,
+      // avatarURL: existingUser.avatarURL || null,
     });
   } catch (error) {
     console.error("Login error:", error);
