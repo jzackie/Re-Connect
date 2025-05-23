@@ -40,7 +40,7 @@ const Auth = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const { fullName, username, password, confirmPassword, phoneNumber, avatarFile } = form;
+    const { fullName, username, password, confirmPassword, phoneNumber } = form;
     const URL = 'http://localhost:5000/auth';
 
     if (isSignup && password !== confirmPassword) {
@@ -94,7 +94,7 @@ const Auth = () => {
           { headers: { 'Content-Type': 'application/json' } }
         );
 
-        const { token, userId, fullName, avatarURL, phoneNumber } = data;
+        const { token, userId, fullName, phoneNumber } = data;
 
         cookies.set('token', token, { path: '/' });
         cookies.set('username', username, { path: '/' });
