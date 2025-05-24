@@ -24,7 +24,6 @@ exports.signup = async (req, res) => {
     if (
       typeof username !== "string" ||
       typeof fullName !== "string" ||
-      // typeof email !== "string" ||
       typeof password !== "string" ||
       typeof phoneNumber !== "string" ||
       !username.trim() || !fullName.trim() || !password.trim() || !phoneNumber.trim()
@@ -32,42 +31,30 @@ exports.signup = async (req, res) => {
       return res.status(400).json({ message: "Please fill in all required fields" });
     }
 
-    // const existingUser = await User.findOne({ $or: [{ username }, { email }] });
-    // if (existingUser) {
-    //     const conflictField = existingUser.username === username ? "Username" : "Email";
-    //     return res.status(409).json({ message: `${conflictField} already taken` });
-    //   }
-
     const existingUser = await User.findOne({ username });
     if (existingUser) {
       return res.status(409).json({ message: "Username already taken" });
     }
-
-    // let avatarURL = null;
-    // if (req.file) {
-    //   const ext = path.extname(req.file.originalname);
-    //   const fileName = Date.now() + "-" + username + ext;
-    //   const filePath = path.join(avatarDir, fileName);
-
-    //   fs.writeFileSync(filePath, req.file.buffer);
-
-    //   avatarURL = `${req.protocol}://${req.get("host")}/public/avatars/${fileName}`;
-    // }
 
     const hashedPassword = await bcryptjs.hash(password, 10);
 
     const newUser = new User({
       fullName,
       username,
-      // email,
       password: hashedPassword,
       phoneNumber,
-      // avatarURL,
     });
 
     await newUser.save();
 
     const client = StreamChat.getInstance(api_key, api_secret);
+
+    // ✅ Register the user in Stream
+    await client.upsertUser({
+      id: newUser._id.toString(),
+      name: newUser.fullName,
+    });
+
     const token = client.createToken(newUser._id.toString());
 
     res.status(201).json({
@@ -76,9 +63,7 @@ exports.signup = async (req, res) => {
       userId: newUser._id,
       username: newUser.username,
       fullName: newUser.fullName,
-      // email: newUser.email,
       phoneNumber: newUser.phoneNumber,
-      // avatarURL: newUser.avatarURL,
     });
   } catch (error) {
     console.error("Signup error:", error);
@@ -106,6 +91,13 @@ exports.login = async (req, res) => {
     }
 
     const client = StreamChat.getInstance(api_key, api_secret);
+
+    // ✅ Ensure user still exists in Stream (optional but recommended)
+    await client.upsertUser({
+      id: existingUser._id.toString(),
+      name: existingUser.fullName,
+    });
+
     const token = client.createToken(existingUser._id.toString());
 
     res.status(200).json({
@@ -114,9 +106,7 @@ exports.login = async (req, res) => {
       userId: existingUser._id,
       fullName: existingUser.fullName,
       username: existingUser.username,
-      // email: existingUser.email,
       phoneNumber: existingUser.phoneNumber,
-      // avatarURL: existingUser.avatarURL || null,
     });
   } catch (error) {
     console.error("Login error:", error);

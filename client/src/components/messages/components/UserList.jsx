@@ -48,14 +48,13 @@ const UserList = ({ setSelectedUsers }) => {
   useEffect(() => {
     if (!client) return;
 
-    let isMounted = true; // to avoid setting state if component unmounted
+    let isMounted = true;
     const getUsers = async () => {
       setLoading(true);
       try {
         const response = await client.queryUsers(
           { id: { $ne: client.userID } },
           { id: 1 },
-          { limit: 8 }
         );
         if (isMounted) {
           if (response.users.length) {
@@ -78,7 +77,7 @@ const UserList = ({ setSelectedUsers }) => {
     getUsers();
 
     return () => {
-      isMounted = false; // cleanup flag on unmount
+      isMounted = false;
     };
   }, [client]);
 
@@ -103,9 +102,11 @@ const UserList = ({ setSelectedUsers }) => {
       {loading ? (
         <div className="user-list__message">Loading users...</div>
       ) : (
-        users.map((user) => (
-          <UserItem key={user.id} user={user} setSelectedUsers={setSelectedUsers} />
-        ))
+        <div className="user-list__scroll">
+          {users.map((user) => (
+            <UserItem key={user.id} user={user} setSelectedUsers={setSelectedUsers} />
+          ))}
+        </div>
       )}
     </ListContainer>
   );

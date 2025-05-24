@@ -485,12 +485,22 @@
     border-radius: 8px;
     cursor: pointer;
   }
+
+  .user-list__scroll {
+    flex: 1; /* fills remaining space in container */
+    overflow-y: auto;
+    margin-top: 10px;
+    margin-right: 6px; /* optional: spacing for scrollbar */
+  }
+
   
   .user-list__container {
     display: flex;
     flex-direction: column;
     height: 100%;
+    overflow: hidden; /* Prevents outer overflow */
   }
+
   
   .user-list__header {
     display: flex;
