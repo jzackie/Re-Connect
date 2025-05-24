@@ -1,4 +1,4 @@
-const bcrypt = require("bcrypt");
+const bcryptjs = require("bcryptjs");
 const { StreamChat } = require("stream-chat");
 const dotenv = require("dotenv");
 const User = require("../models/User");
@@ -54,7 +54,7 @@ exports.signup = async (req, res) => {
     //   avatarURL = `${req.protocol}://${req.get("host")}/public/avatars/${fileName}`;
     // }
 
-    const hashedPassword = await bcrypt.hash(password, 10);
+    const hashedPassword = await bcryptjs.hash(password, 10);
 
     const newUser = new User({
       fullName,
@@ -100,7 +100,7 @@ exports.login = async (req, res) => {
       return res.status(400).json({ message: "User not found." });
     }
 
-    const isPasswordCorrect = await bcrypt.compare(password, existingUser.password);
+    const isPasswordCorrect = await bcryptjs.compare(password, existingUser.password);
     if (!isPasswordCorrect) {
       return res.status(401).json({ message: "Incorrect password." });
     }
