@@ -41,7 +41,7 @@ const Auth = () => {
     e.preventDefault();
 
     const { fullName, username, password, confirmPassword, phoneNumber } = form;
-    const URL = 'http://localhost:5000/auth';
+    const URL = 'https://re-connect.onrender.com/auth';
 
     if (isSignup && password !== confirmPassword) {
       alert("Passwords do not match");
