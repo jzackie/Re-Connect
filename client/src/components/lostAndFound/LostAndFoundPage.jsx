@@ -50,7 +50,7 @@ const LostAndFound = () => {
     location: "",
     foundDate: "",
     status: "Unclaimed",
-    link: "", // Added link here for editing
+    link: "", 
   });
 
   useEffect(() => {
